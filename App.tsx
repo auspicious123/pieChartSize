@@ -6,7 +6,9 @@
  */
 
 import React from 'react';
+
 import type {PropsWithChildren} from 'react';
+
 import {
   SafeAreaView,
   ScrollView,
@@ -17,6 +19,8 @@ import {
   View,
 } from 'react-native';
 
+import {VictoryPie} from 'victory-native';
+
 import {
   Colors,
   DebugInstructions,
@@ -25,9 +29,21 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import MyPieComponent from './chart';
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
+
+interface DataFormat {
+  x: string;
+  y: number;
+}
+
+const sampleData: DataFormat[] = [
+  {x: 'Label 1', y: 35},
+  {x: 'Label 2', y: 40},
+  {x: 'Label 3', y: 55},
+];
 
 function Section({children, title}: SectionProps): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -72,14 +88,17 @@ function App(): React.JSX.Element {
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
         <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
+        <View>
+          <VictoryPie
+            data={sampleData}
+            labelRadius={({innerRadius}: {innerRadius?: number}) =>
+              innerRadius ? innerRadius + 10 : 50
+            }
+            radius={({datum}: {datum: DataFormat}) => 100 + datum.y}
+            innerRadius={50}
+            style={{labels: {fill: 'white', fontSize: 20, fontWeight: 'bold'}}}
+          />
+          {/* </Section> */}
           <Section title="See Your Changes">
             <ReloadInstructions />
           </Section>
